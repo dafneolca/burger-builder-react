@@ -4,6 +4,9 @@ import Aux from '../../hoc/aux';
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 
+import Modal from '../../components/UI/Modal/Modal'
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
+
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -20,7 +23,25 @@ class BurgerBuilder extends Component {
       cheese: 0,
       bacon: 0
     },
-    totalPrice: 4
+    totalPrice: 4,
+    purchasable: false
+  }
+
+  updatePurchaseState = () => {
+    const ingredients = {
+      ...this.state.ingredients
+    }
+
+    const sum = Object.keys(ingredients)
+      .map(igKey => {
+        return ingredients[igKey]
+      })
+      .reduce((sum, el) => {
+        return sum + el
+      }, 0);
+
+    this.setState({ purchasable: sum > 0 })
+    console.log(sum);
   }
 
   addIngredientHandler = (type) => {
@@ -32,6 +53,7 @@ class BurgerBuilder extends Component {
     const priceAddition = INGREDIENT_PRICES[type]
     const newPrice = this.state.totalPrice + priceAddition;
     this.setState({ totalPrice: newPrice, ingredients: updatedIngredients })
+    this.updatePurchaseState();
   }
 
   removeIngredientHandler = (type) => {
@@ -47,6 +69,7 @@ class BurgerBuilder extends Component {
     const priceDeduction = INGREDIENT_PRICES[type]
     const newPrice = this.state.totalPrice - priceDeduction;
     this.setState({ totalPrice: newPrice, ingredients: updatedIngredients })
+    this.updatePurchaseState();
   }
 
   render() {
@@ -60,12 +83,16 @@ class BurgerBuilder extends Component {
 
     return (
       <Aux>
+        <Modal><OrderSummary ingredients={this.state.ingredients} />
+        </Modal>
         <div><Burger ingredients={this.state.ingredients} /></div>
         <div><BuildControls
+          price={this.state.totalPrice}
           added={this.addIngredientHandler}
           removed={this.removeIngredientHandler}
+          purchasable={this.state.purchasable}
           disabled={disabledInfo} /></div>
-      </Aux>
+      </Aux >
     );
   }
 }
