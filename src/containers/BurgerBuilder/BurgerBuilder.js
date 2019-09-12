@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Aux from '../../hoc/aux';
+import Aux from '../../hoc/Aux/aux';
 
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
@@ -27,22 +27,6 @@ class BurgerBuilder extends Component {
     purchasable: false,
     purchasing: false
   }
-
-  // updatePurchaseState = () => {
-  //   const ingredients = {
-  //     ...this.state.ingredients
-  //   }
-  //   const sum = Object.keys(ingredients)
-  //     .map(igKey => {
-  //       return ingredients[igKey]
-  //     })
-  //     .reduce((sum, el) => {
-  //       return sum + el
-  //     }, 0);
-
-  //   this.setState({ purchasable: sum > 0 });
-  //   console.log("sum? ", sum);
-  // }
 
   updatePurchaseState(ingredients) {
     const sum = Object.keys(ingredients)
@@ -107,6 +91,7 @@ class BurgerBuilder extends Component {
 
     return (
       <Aux>
+        {/* Lifecycle hook - only render order summary when modal show === true */}
         <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
           <OrderSummary
             ingredients={this.state.ingredients}
